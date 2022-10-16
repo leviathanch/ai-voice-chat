@@ -47,8 +47,12 @@ class GPTVoiceInterface:
 
 		# GPT3:
 		openai.api_key = os.getenv("OPENAI_API_KEY")
-		#print(openai.Model.list())
-
+		#help(openai.Model.list())
+		#self.engine = "davinci"
+		self.engine = "babbage"
+		with open("init_prompt.txt", "r") as f:
+			self.prompt = f.read()
+		self.speak("I am an AI created by OpenAI. How can I help you today?")
 
 	# Record audio
 	def recording_thread(self):
@@ -62,9 +66,15 @@ class GPTVoiceInterface:
 			self.running = False
 			self.recordingThread.join()
 			text = self.speech_to_text()
-			self.speak(text)
+			text = self.submit_chat(text)
+			if len(text) > 0:
+				self.speak(text)
 			os.remove(self.recordingfile)
 			print("Recording stopped")
+			print("Backup log")
+			with open("/tmp/history.txt", "w") as f:
+				f.write(self.prompt)
+				f.close()
 		else:
 			print("Already stopped")
 
@@ -97,7 +107,23 @@ class GPTVoiceInterface:
 		os.remove(self.speechfile)
 	
 	# Send to GPT3
-#self.apikey
+	def submit_chat(self, text):
+		template = "Human: {}\nAI:"
+		self.prompt += template.format(text)
+		result = openai.Completion.create(
+			engine=self.engine,
+			prompt=self.prompt,
+			temperature=0.9,
+			max_tokens=64,
+			stop=["Human", "AI", "\n"],
+			top_p=1.0,
+			frequency_penalty=0.0,
+			presence_penalty=-0.6
+		)
+		ret = result.choices[0]['text']
+		self.prompt += ret
+		self.prompt += '\n' 
+		return ret
 
 	def run(self):
 		self.tk.mainloop()
