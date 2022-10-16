@@ -1,0 +1,3 @@
+[submodule "ReVidia-Audio-Visualizer"]
+	path = ReVidia-Audio-Visualizer
+	url = https://github.com/GhostNaN/ReVidia-Audio-Visualizer.git
