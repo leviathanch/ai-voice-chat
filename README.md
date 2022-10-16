@@ -9,7 +9,8 @@ For getting the visual output execute:
 
 This will visualize the synthesized audio output on your default output device
 
-Then execute
+Then execute:
+
     python3 interface.py
 
 You will have one button for starting to capture your voice, when you stop recording
