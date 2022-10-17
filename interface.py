@@ -59,7 +59,10 @@ class GPTVoiceInterface:
 
 		# are we resuming a past conversation?
 		if args.resume_prompt is None:
-			resume_prompt ="init_prompt.txt" 
+			resume_prompt = "init_prompt.txt" 
+		else:
+			resume_prompt = args.resume_prompt
+
 		with open(resume_prompt, "r") as f:
 			self.prompt = f.read()
 
@@ -173,8 +176,8 @@ class GPTVoiceInterface:
 			'''
 			webm_file = self.recordingfile.replace('.wav','.webm')
 			webm = ffmpeg.input(self.recordingfile).output(webm_file).overwrite_output()
-			#webm.run_async(pipe_stdout=False)
-			webm.run(quiet=True)
+			webm.run_async(pipe_stdout=False, quiet=True)
+			#webm.run(quiet=True)
 
 			buffer = BytesIO()
 			c = pycurl.Curl()
